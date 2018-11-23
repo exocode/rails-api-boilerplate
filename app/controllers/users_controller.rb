@@ -1,5 +1,15 @@
 class UsersController < ApplicationController
+  skip_before_action :authorize_request, only: :create
   before_action :set_user, only: [:show, :update, :destroy]
+
+  # POST /signup
+  # return authenticated token upon signup
+  def create
+    user = User.create!(user_params)
+    auth_token = AuthenticateUser.new(user.email, user.password).call
+    response = {message: Message.account_created, auth_token: auth_token}
+    json_response(response, :created)
+  end
 
   # GET /users
   # GET /users.json
@@ -11,18 +21,6 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-  end
-
-  # POST /users
-  # POST /users.json
-  def create
-    @user = User.new(user_params)
-
-    if @user.save
-      render :show, status: :created, location: @user
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
   end
 
   # PATCH/PUT /users/1
@@ -42,13 +40,19 @@ class UsersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def user_params
-      params.require(:user).permit(:email, :password, :birthday)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  def user_params
+    params.permit(
+        :name,
+        :email,
+        :password,
+        :password_confirmation
+    )
+  end
+
 end
