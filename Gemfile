@@ -58,5 +58,8 @@ group :development do
   gem 'capistrano-rails'
 end
 
+# static code analyzer and formatter
+gem 'rubocop', require: false
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
