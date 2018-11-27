@@ -21,6 +21,8 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
+    @user = User.find(user_params[:id])
+    render json: @user
   end
 
   # PATCH/PUT /users/1
